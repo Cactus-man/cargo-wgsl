@@ -1,6 +1,11 @@
+use std::io;
 use std::path::PathBuf;
 
-use crate::naga::Naga;
+fn main() -> io::Result<()> {
+    Ok(())
+}
+
+use cargo_wgsl::{naga::Naga, wgsl_error::WgslError};
 
 use jsonrpc_stdio_server::jsonrpc_core::*;
 use jsonrpc_stdio_server::ServerBuilder;
@@ -57,7 +62,6 @@ pub fn run() {
             let res = match validator.validate_wgsl(&params.path) {
                 Ok(_) => ValidateFileResponse::Ok(true),
                 Err(err) => {
-                    use crate::wgsl_error::WgslError;
                     match err {
                         WgslError::ParserErr { error, line, pos } => {
                             ValidateFileResponse::ParserErr {
