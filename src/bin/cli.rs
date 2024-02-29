@@ -1,6 +1,6 @@
 use colored::*;
 
-use cargo_wgsl::{naga::Naga, wgsl_error::WgslError};
+use cargo_wgsl::{naga::Naga, errors::WgslError};
 use std::{io, path::Path};
 use walkdir::WalkDir;
 
@@ -51,7 +51,7 @@ pub fn success(path: &Path) {
 
 pub fn error(path: &Path, error: WgslError) { 
     match error {
-        WgslError::ParserErr { error, line, pos } => {
+        WgslError::Parse { error, line, pos } => {
             eprintln!(
                 "{} {}:{line}:{pos}\n{}: {}",
                 "=>".blue(),
@@ -60,7 +60,7 @@ pub fn error(path: &Path, error: WgslError) {
                 error
             )
         }
-        WgslError::ValidationErr { error, emitted, .. } => eprintln!("❌ {} \n{:?} {}", path.display(), error, emitted),
+        WgslError::Validate { error, emitted, .. } => eprintln!("❌ {} \n{:?} {}", path.display(), error, emitted),
         err => eprintln!("❌ {} \n{:#?}", path.display(), err),
     }
 }

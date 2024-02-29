@@ -6,7 +6,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-use crate::wgsl_error::WgslError;
+use crate::errors::WgslError;
 
 pub struct Naga {
     validator: naga::valid::Validator,
@@ -25,7 +25,7 @@ impl Naga {
             wgsl::parse_str(&shader).map_err(|err| WgslError::from_parse_err(err, &shader))?;
 
         if let Err(error) = self.validator.validate(&module) {
-            Err(WgslError::ValidationErr { emitted: error.emit_to_string(&shader), src: shader, error })
+            Err(WgslError::Validate { emitted: error.emit_to_string(&shader), src: shader, error })
         } else {
             Ok(())
         }

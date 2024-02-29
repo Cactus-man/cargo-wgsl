@@ -5,7 +5,7 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
-use cargo_wgsl::{naga::Naga, wgsl_error::WgslError};
+use cargo_wgsl::{naga::Naga, errors::WgslError};
 
 use jsonrpc_stdio_server::jsonrpc_core::*;
 use jsonrpc_stdio_server::ServerBuilder;
@@ -63,7 +63,7 @@ pub fn run() {
                 Ok(_) => ValidateFileResponse::Ok(true),
                 Err(err) => {
                     match err {
-                        WgslError::ParserErr { error, line, pos } => {
+                        WgslError::Parse { error, line, pos } => {
                             ValidateFileResponse::ParserErr {
                                 error,
                                 scopes: vec![],
@@ -71,7 +71,7 @@ pub fn run() {
                                 pos,
                             }
                         }
-                        WgslError::ValidationErr { src, error, .. } => {
+                        WgslError::Validate { src, error, .. } => {
                             if let Some((span, _)) = error.spans().next() {
                                 let loc = span.location(&src);
                                 ValidateFileResponse::ParserErr {
